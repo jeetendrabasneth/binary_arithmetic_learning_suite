@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Arithmetic Master - Class 11 & 12 CS Tool</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['Fira Code', 'Courier New', 'monospace'],
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .code-font { font-family: 'Fira Code', monospace; }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(100,100,100,0.4); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(100,100,100,0.6); }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col transition-colors duration-200" id="app-body">
+
+    <!-- Header / Navigation -->
+    <header class="border-b border-gray-800 bg-gray-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 p-2 rounded-lg text-white font-bold text-xl code-font">0101</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight text-white">Binary Arithmetic Lab</h1>
+                    <p class="text-xs text-blue-400 font-medium">CS Class 11 & 12 Practice Suite</p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="hidden md:flex space-x-1 bg-gray-800/80 p-1 rounded-xl border border-gray-700/50">
+                <button onclick="switchTab('solver')" id="tab-solver" class="nav-tab px-4 py-1.5 rounded-lg text-sm font-medium transition-all bg-blue-600 text-white shadow-sm">
+                    <i class="fa-solid fa-calculator mr-2"></i>Interactive Solver
+                </button>
+                <button onclick="switchTab('quiz')" id="tab-quiz" class="nav-tab px-4 py-1.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-all">
+                    <i class="fa-solid fa-graduation-cap mr-2"></i>Practice Quiz
+                </button>
+                <button onclick="switchTab('theory')" id="tab-theory" class="nav-tab px-4 py-1.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-all">
+                    <i class="fa-solid fa-book-open mr-2"></i>Theory & Rules
+                </button>
+            </nav>
+
+            <!-- Right Controls -->
+            <div class="flex items-center space-x-2">
+                <button onclick="toggleTheme()" class="p-2.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-300 hover:text-white hover:bg-gray-700 transition" title="Toggle Light/Dark Theme">
+                    <i id="theme-icon" class="fa-solid fa-sun"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Bar -->
+        <div class="flex md:hidden border-t border-gray-800 bg-gray-900/90 text-xs font-medium justify-around py-2">
+            <button onclick="switchTab('solver')" id="mtab-solver" class="mobile-nav-tab text-blue-400 flex flex-col items-center">
+                <i class="fa-solid fa-calculator text-base mb-0.5"></i>
+                <span>Solver</span>
+            </button>
+            <button onclick="switchTab('quiz')" id="mtab-quiz" class="mobile-nav-tab text-gray-400 flex flex-col items-center">
+                <i class="fa-solid fa-graduation-cap text-base mb-0.5"></i>
+                <span>Quiz</span>
+            </button>
+            <button onclick="switchTab('theory')" id="mtab-theory" class="mobile-nav-tab text-gray-400 flex flex-col items-center">
+                <i class="fa-solid fa-book-open text-base mb-0.5"></i>
+                <span>Theory</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- SECTION 1: INTERACTIVE SOLVER & CALCULATOR -->
+        <section id="sec-solver" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Input Panel -->
+                <div class="lg:col-span-4 bg-gray-800/60 border border-gray-700/60 rounded-2xl p-5 backdrop-blur-sm space-y-5">
+                    <div class="flex justify-between items-center pb-3 border-b border-gray-700/60">
+                        <h2 class="font-bold text-lg flex items-center text-white">
+                            <i class="fa-solid fa-sliders text-blue-400 mr-2"></i> Configuration
+                        </h2>
+                        <span class="text-xs bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full font-mono">Real-time</span>
+                    </div>
+
+                    <!-- Input Mode Toggle -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Input Representation</label>
+                        <div class="grid grid-cols-2 gap-2 bg-gray-900/80 p-1 rounded-xl border border-gray-700">
+                            <button id="mode-bin" onclick="setInputMode('bin')" class="py-1.5 text-xs font-medium rounded-lg bg-blue-600 text-white transition">Binary (Base-2)</button>
+                            <button id="mode-dec" onclick="setInputMode('dec')" class="py-1.5 text-xs font-medium rounded-lg text-gray-400 hover:text-white transition">Decimal (Base-10)</button>
+                        </div>
+                    </div>
+
+                    <!-- Operation Selection -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Operation Type</label>
+                        <select id="op-select" onchange="calculate()" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 text-white outline-none">
+                            <option value="add">Binary Addition (+)</option>
+                            <option value="sub-direct">Direct Subtraction (-)</option>
+                            <option value="sub-1comp">Subtraction using 1's Complement</option>
+                            <option value="sub-2comp" selected>Subtraction using 2's Complement</option>
+                        </select>
+                    </div>
+
+                    <!-- Bit Length Selection -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Bit Format / Word Length</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setBitLength(4)" id="bit-4" class="bit-btn py-1.5 border border-gray-700 rounded-xl text-xs font-mono font-semibold bg-gray-900 text-gray-300 hover:border-blue-500">4-Bit</button>
+                            <button onclick="setBitLength(8)" id="bit-8" class="bit-btn py-1.5 border border-blue-500 bg-blue-600 text-white rounded-xl text-xs font-mono font-semibold">8-Bit</button>
+                            <button onclick="setBitLength(16)" id="bit-16" class="bit-btn py-1.5 border border-gray-700 rounded-xl text-xs font-mono font-semibold bg-gray-900 text-gray-300 hover:border-blue-500">16-Bit</button>
+                        </div>
+                    </div>
+
+                    <!-- Number Inputs -->
+                    <div class="space-y-4 pt-2">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-xs font-semibold text-gray-300" id="lbl-num1">First Number (A)</label>
+                                <span id="hint-num1" class="text-xs font-mono text-blue-400">Dec: 25</span>
+                            </div>
+                            <input type="text" id="input-num1" value="00011001" oninput="calculate()" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-base code-font focus:ring-2 focus:ring-blue-500 text-green-400 font-bold outline-none uppercase" placeholder="Enter binary digits">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-xs font-semibold text-gray-300" id="lbl-num2">Second Number (B)</label>
+                                <span id="hint-num2" class="text-xs font-mono text-blue-400">Dec: 12</span>
+                            </div>
+                            <input type="text" id="input-num2" value="00001100" oninput="calculate()" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-base code-font focus:ring-2 focus:ring-blue-500 text-green-400 font-bold outline-none uppercase" placeholder="Enter binary digits">
+                        </div>
+                    </div>
+
+                    <!-- Preset Quick Actions -->
+                    <div class="pt-2 border-t border-gray-700/60">
+                        <p class="text-xs text-gray-400 mb-2">Preset Examples:</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            <button onclick="loadPreset(15, 7)" class="px-2.5 py-1 text-xs bg-gray-700/50 hover:bg-gray-700 border border-gray-600 rounded-lg text-gray-300">15 - 7</button>
+                            <button onclick="loadPreset(7, 12)" class="px-2.5 py-1 text-xs bg-gray-700/50 hover:bg-gray-700 border border-gray-600 rounded-lg text-gray-300">7 - 12 (Negative)</button>
+                            <button onclick="loadPreset(10, 10)" class="px-2.5 py-1 text-xs bg-gray-700/50 hover:bg-gray-700 border border-gray-600 rounded-lg text-gray-300">10 + 10</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Solver Steps Display Panel -->
+                <div class="lg:col-span-8 bg-gray-800/60 border border-gray-700/60 rounded-2xl p-5 backdrop-blur-sm flex flex-col justify-between space-y-6">
+                    <div>
+                        <div class="flex justify-between items-center pb-3 border-b border-gray-700/60">
+                            <h2 class="font-bold text-lg flex items-center text-white">
+                                <i class="fa-solid fa-microchip text-green-400 mr-2"></i> Step-by-Step Execution Breakdown
+                            </h2>
+                            <span id="operation-badge" class="px-3 py-1 bg-green-500/10 border border-green-500/30 text-green-400 font-mono text-xs font-semibold rounded-lg">2's Complement Mode</span>
+                        </div>
+
+                        <!-- Mathematical Alignment Grid / Diagram -->
+                        <div class="mt-5 p-4 bg-gray-900 border border-gray-700/80 rounded-xl overflow-x-auto shadow-inner">
+                            <div id="visual-alignment-container" class="min-w-max flex flex-col items-center justify-center font-mono text-lg sm:text-xl py-2">
+                                <!-- Populated dynamically by JavaScript -->
+                            </div>
+                        </div>
+
+                        <!-- Step explanations list -->
+                        <div class="mt-6 space-y-3" id="steps-container">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Final Answer summary box -->
+                    <div id="result-summary-box" class="p-4 bg-blue-950/40 border border-blue-800/60 rounded-xl flex flex-wrap justify-between items-center gap-3">
+                        <div>
+                            <span class="text-xs uppercase tracking-wider text-blue-300 font-semibold block">Final Result Output</span>
+                            <div class="flex items-baseline space-x-3 mt-0.5">
+                                <span id="res-binary" class="code-font text-xl sm:text-2xl font-bold text-green-400">0000 1101</span>
+                                <span id="res-decimal" class="text-sm font-medium text-gray-300">(+13 in decimal)</span>
+                            </div>
+                        </div>
+                        <div id="overflow-badge-wrapper">
+                            <!-- Status pills -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: PRACTICE & QUIZ TOOL -->
+        <section id="sec-quiz" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Quiz Sidebar / Controls -->
+                <div class="lg:col-span-4 space-y-5">
+                    <!-- Scoreboard -->
+                    <div class="bg-gray-800/60 border border-gray-700/60 rounded-2xl p-5 backdrop-blur-sm">
+                        <h2 class="font-bold text-lg text-white mb-4 flex items-center">
+                            <i class="fa-solid fa-trophy text-yellow-400 mr-2"></i> Student Scoreboard
+                        </h2>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-gray-900/80 border border-gray-700 p-3 rounded-xl text-center">
+                                <span class="text-xs text-gray-400 uppercase font-semibold">Total Points</span>
+                                <div id="quiz-score" class="text-3xl font-bold text-blue-400 code-font mt-1">0</div>
+                            </div>
+                            <div class="bg-gray-900/80 border border-gray-700 p-3 rounded-xl text-center">
+                                <span class="text-xs text-gray-400 uppercase font-semibold">Current Streak</span>
+                                <div id="quiz-streak" class="text-3xl font-bold text-amber-400 code-font mt-1">0 🔥</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question Customization -->
+                    <div class="bg-gray-800/60 border border-gray-700/60 rounded-2xl p-5 backdrop-blur-sm space-y-4">
+                        <h3 class="font-bold text-sm uppercase text-gray-300 tracking-wider">Practice Filters</h3>
+                        
+                        <div>
+                            <label class="text-xs text-gray-400 mb-1 block">Topic Focus</label>
+                            <select id="quiz-topic" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:ring-2 focus:ring-blue-500 outline-none">
+                                <option value="all">Mixed (All Topics)</option>
+                                <option value="add">Binary Addition Only</option>
+                                <option value="sub-direct">Direct Subtraction Only</option>
+                                <option value="sub-1comp">1's Complement Method</option>
+                                <option value="sub-2comp">2's Complement Method</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="text-xs text-gray-400 mb-1 block">Difficulty Level</label>
+                            <select id="quiz-diff" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-sm text-white focus:ring-2 focus:ring-blue-500 outline-none">
+                                <option value="easy">Easy (4-bit positive results)</option>
+                                <option value="medium" selected>Medium (8-bit numbers)</option>
+                                <option value="hard">Hard (8-bit negative results)</option>
+                            </select>
+                        </div>
+
+                        <button onclick="generateQuestion()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm rounded-xl transition shadow-lg flex items-center justify-center">
+                            <i class="fa-solid fa-arrows-rotate mr-2"></i> Generate New Question
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quiz Card Panel -->
+                <div class="lg:col-span-8 bg-gray-800/60 border border-gray-700/60 rounded-2xl p-6 backdrop-blur-sm flex flex-col justify-between">
+                    <div>
+                        <!-- Header / Question Info -->
+                        <div class="flex justify-between items-center border-b border-gray-700/60 pb-3">
+                            <span id="quiz-type-tag" class="px-3 py-1 bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-semibold rounded-lg">
+                                2's Complement Subtraction
+                            </span>
+                            <span class="text-xs text-gray-400 font-mono" id="quiz-bit-tag">8-bit word length</span>
+                        </div>
+
+                        <!-- Problem Display -->
+                        <div class="my-8 text-center">
+                            <p class="text-sm text-gray-400 mb-2">Solve the following arithmetic problem:</p>
+                            <div class="inline-block p-4 sm:p-6 bg-gray-900 border border-gray-700 rounded-2xl shadow-inner">
+                                <div id="quiz-problem-display" class="code-font text-2xl sm:text-3xl font-bold tracking-wider text-blue-300">
+                                    00001010 - 00000100
+                                </div>
+                                <p id="quiz-instruction" class="text-xs text-gray-400 mt-2 font-sans">Perform subtraction using 2's Complement method.</p>
+                            </div>
+                        </div>
+
+                        <!-- Student Input Form -->
+                        <div class="max-w-md mx-auto space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-gray-400 mb-1">Your Binary Answer</label>
+                                <input type="text" id="quiz-user-input" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 code-font text-center text-lg text-green-400 font-bold focus:ring-2 focus:ring-blue-500 outline-none uppercase" placeholder="e.g. 00000110" autocomplete="off">
+                            </div>
+
+                            <div class="flex space-x-3">
+                                <button onclick="checkQuizAnswer()" class="flex-1 py-3 bg-green-600 hover:bg-green-500 text-white font-semibold text-sm rounded-xl transition shadow-lg">
+                                    Submit Answer
+                                </button>
+                                <button onclick="toggleQuizSolution()" id="btn-show-solution" class="px-4 py-3 bg-gray-700 hover:bg-gray-600 text-gray-200 font-semibold text-sm rounded-xl transition">
+                                    Show Solution
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Message -->
+                        <div id="quiz-feedback" class="mt-4 hidden p-4 rounded-xl text-center text-sm font-medium"></div>
+                    </div>
+
+                    <!-- Hidden Solution Accordion -->
+                    <div id="quiz-solution-box" class="mt-6 p-4 bg-gray-900 border border-gray-700 rounded-xl hidden">
+                        <h4 class="font-bold text-sm text-blue-400 mb-2 flex items-center">
+                            <i class="fa-solid fa-circle-info mr-2"></i> Step-by-Step Solution Breakdown
+                        </h4>
+                        <div id="quiz-solution-steps" class="space-y-2 text-xs font-mono text-gray-300">
+                            <!-- Populated on click -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: THEORY & EDUCATIONAL MODULE -->
+        <section id="sec-theory" class="hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Theory Cards -->
+                <div class="bg-gray-800/60 border border-gray-700/60 rounded-2xl p-5 backdrop-blur-sm">
+                    <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400 w-max mb-3">
+                        <i class="fa-solid fa-server text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-base text-white mb-2">Why Binary Arithmetic?</h3>
+                    <p class="text-xs text-gray-300 leading-relaxed">
+                        Digital electronic circuits use transistors as switches that only understand two physical states: <strong>ON (1)</strong> and <strong>OFF (0)</strong>. All complex operations, graphics, and algorithms in computers are reduced to logic gate additions at the hardware level.
+                    </p>
+                </div>
+
+                <div class="bg-gray-800/60 border border-gray-700/60 rounded-2xl p-5 backdrop-blur-sm">
+                    <div class="p-3 bg-purple-500/10 border border-purple-500/20 rounded-xl text-purple-400 w-max mb-3">
+                        <i class="fa-solid fa-arrows-split-up-and-left text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-base text-white mb-2">The Need for Complements</h3>
+                    <p class="text-xs text-gray-300 leading-relaxed">
+                        Designing separate hardware subtractor circuits is costly and inefficient. By converting subtraction problems into <strong>addition problems using complement representation</strong>, CPUs can perform both addition and subtraction using the exact same adder circuitry (ALU).
+                    </p>
+                </div>
+
+                <div class="bg-gray-800/60 border border-gray-700/60 rounded-2xl p-5 backdrop-blur-sm">
+                    <div class="p-3 bg-green-500/10 border border-green-500/20 rounded-xl text-green-400 w-max mb-3">
+                        <i class="fa-solid fa-code-compare text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-base text-white mb-2">1's vs 2's Complement</h3>
+                    <p class="text-xs text-gray-300 leading-relaxed">
+                        While 1's complement simply flips all bits, it has a drawback: it produces two representations for zero (<code class="text-green-400">+0</code> and <code class="text-green-400">-0</code>) and requires an end-around carry. <strong>2's Complement</strong> solves this by adding 1, giving a single zero and cleaner hardware implementation.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Detailed Rules Reference Tables -->
+            <div class="bg-gray-800/60 border border-gray-700/60 rounded-2xl p-6 backdrop-blur-sm space-y-6">
+                <h3 class="font-bold text-lg text-white border-b border-gray-700 pb-3 flex items-center">
+                    <i class="fa-solid fa-book text-blue-400 mr-2"></i> Standard Rules & Procedures (Class 11/12 Syllabus)
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Addition Rules -->
+                    <div class="bg-gray-900/80 p-4 rounded-xl border border-gray-700">
+                        <h4 class="font-bold text-sm text-blue-300 mb-3 uppercase tracking-wider">1. Binary Addition Rules</h4>
+                        <table class="w-full text-xs text-left code-font">
+                            <thead class="bg-gray-800 text-gray-400 border-b border-gray-700">
+                                <tr>
+                                    <th class="p-2">A + B</th>
+                                    <th class="p-2">Sum</th>
+                                    <th class="p-2">Carry</th>
+                                    <th class="p-2">Explanation</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-800 text-gray-300">
+                                <tr><td class="p-2">0 + 0</td><td class="p-2 font-bold text-green-400">0</td><td class="p-2 text-gray-500">0</td><td class="p-2 font-sans text-gray-400">0 in decimal</td></tr>
+                                <tr><td class="p-2">0 + 1</td><td class="p-2 font-bold text-green-400">1</td><td class="p-2 text-gray-500">0</td><td class="p-2 font-sans text-gray-400">1 in decimal</td></tr>
+                                <tr><td class="p-2">1 + 0</td><td class="p-2 font-bold text-green-400">1</td><td class="p-2 text-gray-500">0</td><td class="p-2 font-sans text-gray-400">1 in decimal</td></tr>
+                                <tr><td class="p-2">1 + 1</td><td class="p-2 font-bold text-green-400">0</td><td class="p-2 text-amber-400 font-bold">1</td><td class="p-2 font-sans text-gray-400">2 in decimal (0 with carry 1)</td></tr>
+                                <tr><td class="p-2">1 + 1 + 1</td><td class="p-2 font-bold text-green-400">1</td><td class="p-2 text-amber-400 font-bold">1</td><td class="p-2 font-sans text-gray-400">3 in decimal (1 with carry 1)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Subtraction Rules -->
+                    <div class="bg-gray-900/80 p-4 rounded-xl border border-gray-700">
+                        <h4 class="font-bold text-sm text-blue-300 mb-3 uppercase tracking-wider">2. Direct Subtraction Rules</h4>
+                        <table class="w-full text-xs text-left code-font">
+                            <thead class="bg-gray-800 text-gray-400 border-b border-gray-700">
+                                <tr>
+                                    <th class="p-2">A - B</th>
+                                    <th class="p-2">Diff</th>
+                                    <th class="p-2">Borrow</th>
+                                    <th class="p-2">Explanation</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-800 text-gray-300">
+                                <tr><td class="p-2">0 - 0</td><td class="p-2 font-bold text-green-400">0</td><td class="p-2 text-gray-500">0</td><td class="p-2 font-sans text-gray-400">Simple subtraction</td></tr>
+                                <tr><td class="p-2">1 - 0</td><td class="p-2 font-bold text-green-400">1</td><td class="p-2 text-gray-500">0</td><td class="p-2 font-sans text-gray-400">Simple subtraction</td></tr>
+                                <tr><td class="p-2">1 - 1</td><td class="p-2 font-bold text-green-400">0</td><td class="p-2 text-gray-500">0</td><td class="p-2 font-sans text-gray-400">Simple subtraction</td></tr>
+                                <tr><td class="p-2">0 - 1</td><td class="p-2 font-bold text-green-400">1</td><td class="p-2 text-red-400 font-bold">1</td><td class="p-2 font-sans text-gray-400">Borrows 1 from next higher bit (value 2)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Step-by-Step Complement Methods -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                    <div class="bg-gray-900/80 p-4 rounded-xl border border-gray-700 space-y-2">
+                        <h4 class="font-bold text-sm text-purple-300 uppercase tracking-wider">3. Steps for 1's Complement Subtraction (A - B)</h4>
+                        <ol class="list-decimal list-inside text-xs text-gray-300 space-y-1.5 leading-relaxed">
+                            <li>Find the 1's complement of subtrahend <code class="text-blue-400">B</code> by inverting all bits (0s to 1s, 1s to 0s).</li>
+                            <li>Add this inverted value to <code class="text-blue-400">A</code> using standard binary addition.</li>
+                            <li><strong>Check for End-Around Carry:</strong>
+                                <ul class="list-disc list-inside ml-4 text-gray-400 mt-1">
+                                    <li>If a carry out exists: Add <code class="text-green-400">1</code> to the result (End-Around Carry). Answer is positive.</li>
+                                    <li>If no carry out: Take 1's complement of the result and put a negative (-) sign.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-gray-900/80 p-4 rounded-xl border border-gray-700 space-y-2">
+                        <h4 class="font-bold text-sm text-purple-300 uppercase tracking-wider">4. Steps for 2's Complement Subtraction (A - B)</h4>
+                        <ol class="list-decimal list-inside text-xs text-gray-300 space-y-1.5 leading-relaxed">
+                            <li>Find the 1's complement of <code class="text-blue-400">B</code> by inverting bits.</li>
+                            <li>Add <code class="text-green-400">1</code> to get the <strong>2's complement</strong> of <code class="text-blue-400">B</code>.</li>
+                            <li>Add the 2's complement result to <code class="text-blue-400">A</code>.</li>
+                            <li><strong>Evaluate Carry Bit:</strong>
+                                <ul class="list-disc list-inside ml-4 text-gray-400 mt-1">
+                                    <li>If carry out exists: <strong>Discard the carry</strong>. Result is positive.</li>
+                                    <li>If no carry out: Take 2's complement of final result; value is negative.</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 bg-gray-900 py-4 text-center text-xs text-gray-500">
+        <p>Binary Arithmetic Interactive Tool • Designed for High School Computer Science Classes</p>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // State Management Variables
+        let state = {
+            mode: 'bin',         // 'bin' or 'dec'
+            bitLength: 8,        // 4, 8, 16
+            operation: 'sub-2comp', // 'add', 'sub-direct', 'sub-1comp', 'sub-2comp'
+            theme: 'dark',       // 'dark' or 'light'
+            quizScore: 0,
+            quizStreak: 0,
+            currentQuizProblem: null
+        };
+
+        // DOM Loaded Init
+        window.onload = function() {
+            calculate();
+            generateQuestion();
+        };
+
+        // Navigation Switcher
+        function switchTab(tabId) {
+            document.getElementById('sec-solver').classList.add('hidden');
+            document.getElementById('sec-quiz').classList.add('hidden');
+            document.getElementById('sec-theory').classList.add('hidden');
+            
+            document.getElementById('sec-' + tabId).classList.remove('hidden');
+
+            // Update Tab Highlight Styling
+            const tabs = ['solver', 'quiz', 'theory'];
+            tabs.forEach(t => {
+                const btn = document.getElementById('tab-' + t);
+                const mbtn = document.getElementById('mtab-' + t);
+                if (t === tabId) {
+                    btn.className = "nav-tab px-4 py-1.5 rounded-lg text-sm font-medium transition-all bg-blue-600 text-white shadow-sm";
+                    if(mbtn) mbtn.className = "mobile-nav-tab text-blue-400 flex flex-col items-center";
+                } else {
+                    btn.className = "nav-tab px-4 py-1.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white transition-all";
+                    if(mbtn) mbtn.className = "mobile-nav-tab text-gray-400 flex flex-col items-center";
+                }
+            });
+        }
+
+        // Toggle Dark/Light Mode
+        function toggleTheme() {
+            const body = document.getElementById('app-body');
+            const icon = document.getElementById('theme-icon');
+            if (state.theme === 'dark') {
+                state.theme = 'light';
+                document.documentElement.classList.remove('dark');
+                body.classList.remove('bg-gray-900', 'text-gray-100');
+                body.classList.add('bg-gray-100', 'text-gray-900');
+                icon.className = "fa-solid fa-moon";
+            } else {
+                state.theme = 'dark';
+                document.documentElement.classList.add('dark');
+                body.classList.remove('bg-gray-100', 'text-gray-900');
+                body.classList.add('bg-gray-900', 'text-gray-100');
+                icon.className = "fa-solid fa-sun";
+            }
+        }
+
+        // Set Bit Length
+        function setBitLength(bits) {
+            state.bitLength = bits;
+            [4, 8, 16].forEach(b => {
+                const btn = document.getElementById(`bit-${b}`);
+                if (b === bits) {
+                    btn.className = "bit-btn py-1.5 border border-blue-500 bg-blue-600 text-white rounded-xl text-xs font-mono font-semibold";
+                } else {
+                    btn.className = "bit-btn py-1.5 border border-gray-700 rounded-xl text-xs font-mono font-semibold bg-gray-900 text-gray-300 hover:border-blue-500";
+                }
+            });
+            // Re-pad or truncate binary inputs when bit length changes
+            normalizeInputs();
+            calculate();
+        }
+
+        // Set Input Mode (Binary vs Decimal)
+        function setInputMode(mode) {
+            state.mode = mode;
+            const btnBin = document.getElementById('mode-bin');
+            const btnDec = document.getElementById('mode-dec');
+            const input1 = document.getElementById('input-num1');
+            const input2 = document.getElementById('input-num2');
+
+            if (mode === 'bin') {
+                btnBin.className = "py-1.5 text-xs font-medium rounded-lg bg-blue-600 text-white transition";
+                btnDec.className = "py-1.5 text-xs font-medium rounded-lg text-gray-400 hover:text-white transition";
+                // Convert decimal values currently in box to binary
+                input1.value = padBinary((parseInt(input1.value) || 0).toString(2), state.bitLength);
+                input2.value = padBinary((parseInt(input2.value) || 0).toString(2), state.bitLength);
+            } else {
+                btnDec.className = "py-1.5 text-xs font-medium rounded-lg bg-blue-600 text-white transition";
+                btnBin.className = "py-1.5 text-xs font-medium rounded-lg text-gray-400 hover:text-white transition";
+                // Convert binary values currently in box to decimal
+                input1.value = parseInt(input1.value, 2) || 0;
+                input2.value = parseInt(input2.value, 2) || 0;
+            }
+            calculate();
+        }
+
+        // Load Presets
+        function loadPreset(n1, n2) {
+            if (state.mode === 'bin') {
+                document.getElementById('input-num1').value = padBinary(n1.toString(2), state.bitLength);
+                document.getElementById('input-num2').value = padBinary(n2.toString(2), state.bitLength);
+            } else {
+                document.getElementById('input-num1').value = n1;
+                document.getElementById('input-num2').value = n2;
+            }
+            calculate();
+        }
+
+        // Helper: Pad binary string to selected bit length
+        function padBinary(binStr, length) {
+            binStr = binStr.replace(/[^01]/g, '');
+            if (binStr.length > length) {
+                return binStr.substring(binStr.length - length);
+            }
+            return binStr.padStart(length, '0');
+        }
+
+        // Helper: Invert bits (1's complement)
+        function invertBits(binStr) {
+            return binStr.split('').map(b => b === '0' ? '1' : '0').join('');
+        }
+
+        // Helper: Add two binary strings
+        function addBinaryStrings(str1, str2) {
+            let carry = 0;
+            let result = '';
+            let carries = new Array(str1.length).fill(0);
+            
+            for (let i = str1.length - 1; i >= 0; i--) {
+                let bit1 = parseInt(str1[i]) || 0;
+                let bit2 = parseInt(str2[i]) || 0;
+                let sum = bit1 + bit2 + carry;
+                
+                let outBit = sum % 2;
+                carry = Math.floor(sum / 2);
+                carries[i] = carry;
+                result = outBit + result;
+            }
+            return { result, carry, carries };
+        }
+
+        // Ensure inputs match format rules
+        function normalizeInputs() {
+            let input1 = document.getElementById('input-num1');
+            let input2 = document.getElementById('input-num2');
+
+            if (state.mode === 'bin') {
+                input1.value = padBinary(input1.value, state.bitLength);
+                input2.value = padBinary(input2.value, state.bitLength);
+            }
+        }
+
+        // CORE CALCULATION & VISUALIZATION ENGINE
+        function calculate() {
+            const op = document.getElementById('op-select').value;
+            state.operation = op;
+            
+            let val1 = document.getElementById('input-num1').value;
+            let val2 = document.getElementById('input-num2').value;
+
+            let num1Dec, num2Dec, bin1, bin2;
+
+            if (state.mode === 'dec') {
+                num1Dec = parseInt(val1) || 0;
+                num2Dec = parseInt(val2) || 0;
+                bin1 = padBinary(num1Dec.toString(2), state.bitLength);
+                bin2 = padBinary(num2Dec.toString(2), state.bitLength);
+                document.getElementById('hint-num1').textContent = `Bin: ${bin1}`;
+                document.getElementById('hint-num2').textContent = `Bin: ${bin2}`;
+            } else {
+                bin1 = padBinary(val1, state.bitLength);
+                bin2 = padBinary(val2, state.bitLength);
+                num1Dec = parseInt(bin1, 2) || 0;
+                num2Dec = parseInt(bin2, 2) || 0;
+                document.getElementById('hint-num1').textContent = `Dec: ${num1Dec}`;
+                document.getElementById('hint-num2').textContent = `Dec: ${num2Dec}`;
+            }
+
+            const visualContainer = document.getElementById('visual-alignment-container');
+            const stepsContainer = document.getElementById('steps-container');
+            const badge = document.getElementById('operation-badge');
+
+            visualContainer.innerHTML = '';
+            stepsContainer.innerHTML = '';
+
+            // Update Header Badge
+            const badgeTitles = {
+                'add': 'Binary Addition',
+                'sub-direct': 'Direct Binary Subtraction',
+                'sub-1comp': "1's Complement Subtraction",
+                'sub-2comp': "2's Complement Subtraction"
+            };
+            badge.textContent = badgeTitles[op];
+
+            // Execution logic branch
+            if (op === 'add') {
+                executeAddition(bin1, bin2, num1Dec, num2Dec);
+            } else if (op === 'sub-direct') {
+                executeDirectSubtraction(bin1, bin2, num1Dec, num2Dec);
+            } else if (op === 'sub-1comp') {
+                executeOnesComplement(bin1, bin2, num1Dec, num2Dec);
+            } else if (op === 'sub-2comp') {
+                executeTwosComplement(bin1, bin2, num1Dec, num2Dec);
+            }
+        }
+
+        // EXECUTION 1: ADDITION
+        function executeAddition(bin1, bin2, dec1, dec2) {
+            const addRes = addBinaryStrings(bin1, bin2);
+            const steps = [
+                `Align both binary numbers of length ${state.bitLength} bits.`,
+                `Perform column-by-column addition from right to left (LSB to MSB) using binary addition rules.`,
+                addRes.carry ? `<span class="text-amber-400 font-semibold">Final Carry Generated: 1</span> (Overflow beyond ${state.bitLength} bits)` : `No final overflow carry generated.`
+            ];
+
+            renderVisualGrid({
+                carries: addRes.carries.slice(0, -1).join(''),
+                num1: bin1,
+                num2: bin2,
+                operator: '+',
+                result: addRes.result,
+                finalCarry: addRes.carry
+            });
+
+            renderSteps(steps);
+            updateResultSummary(addRes.result, dec1 + dec2, addRes.carry === 1);
+        }
+
+        // EXECUTION 2: DIRECT SUBTRACTION
+        function executeDirectSubtraction(bin1, bin2, dec1, dec2) {
+            let isNegative = dec1 < dec2;
+            let diffDec = dec1 - dec2;
+            let resultBin = '';
+
+            if (!isNegative) {
+                // Standard subtraction column logic
+                let borrow = 0;
+                let resChars = [];
+                for (let i = state.bitLength - 1; i >= 0; i--) {
+                    let b1 = parseInt(bin1[i]);
+                    let b2 = parseInt(bin2[i]);
+                    let sub = b1 - b2 - borrow;
+                    if (sub < 0) {
+                        sub += 2;
+                        borrow = 1;
+                    } else {
+                        borrow = 0;
+                    }
+                    resChars.unshift(sub);
+                }
+                resultBin = resChars.join('');
+            } else {
+                resultBin = padBinary((Math.abs(diffDec)).toString(2), state.bitLength);
+            }
+
+            renderVisualGrid({
+                carries: '',
+                num1: bin1,
+                num2: bin2,
+                operator: '-',
+                result: isNegative ? `-${resultBin}` : resultBin,
+                finalCarry: 0
+            });
+
+            const steps = [
+                `Compare numbers: Decimal ${dec1} ${isNegative ? '<' : '>= '} ${dec2}.`,
+                isNegative ? `Since A < B, direct borrowing gives a negative magnitude of -${Math.abs(diffDec)}.` : `Subtract column-by-column taking borrow from left when 0 - 1 occurs.`,
+                `Final binary result: ${isNegative ? '-' : ''}${resultBin}`
+            ];
+
+            renderSteps(steps);
+            updateResultSummary(isNegative ? `-${resultBin}` : resultBin, diffDec, false);
+        }
+
+        // EXECUTION 3: 1'S COMPLEMENT SUBTRACTION
+        function executeOnesComplement(bin1, bin2, dec1, dec2) {
+            const invertedBin2 = invertBits(bin2);
+            const firstAdd = addBinaryStrings(bin1, invertedBin2);
+            let finalResultBin = '';
+            let finalDec = dec1 - dec2;
+            let steps = [];
+
+            steps.push(`<strong>Step 1:</strong> Find 1's Complement of second number (${bin2}) by inverting bits &rarr; <code class="text-purple-400 font-bold">${invertedBin2}</code>`);
+            steps.push(`<strong>Step 2:</strong> Add 1's Complement to first number (${bin1}) &rarr; Sum = <code class="text-blue-400">${firstAdd.result}</code> (Carry Out = <strong>${firstAdd.carry}</strong>)`);
+
+            if (firstAdd.carry === 1) {
+                // End around carry
+                const endAdd = addBinaryStrings(firstAdd.result, padBinary('1', state.bitLength));
+                finalResultBin = endAdd.result;
+                steps.push(`<strong>Step 3:</strong> Carry Out is 1 (Positive result). Add <strong>End-Around Carry (1)</strong> to the result:`);
+                steps.push(`<code class="text-green-400 font-bold">${firstAdd.result} + 1 = ${finalResultBin}</code>`);
+            } else {
+                // Negative result
+                finalResultBin = invertBits(firstAdd.result);
+                steps.push(`<strong>Step 3:</strong> Carry Out is 0 (Negative result). Take 1's complement of result and attach negative sign:`);
+                steps.push(`1's complement of <code class="text-amber-400">${firstAdd.result}</code> = <code class="text-red-400 font-bold">-${finalResultBin}</code>`);
+            }
+
+            renderVisualGrid({
+                carries: firstAdd.carries.slice(0, -1).join(''),
+                num1: bin1,
+                num2: invertedBin2,
+                operator: '+',
+                result: firstAdd.result,
+                finalCarry: firstAdd.carry
+            });
+
+            renderSteps(steps);
+            updateResultSummary(firstAdd.carry === 0 ? `-${finalResultBin}` : finalResultBin, finalDec, false);
+        }
+
+        // EXECUTION 4: 2'S COMPLEMENT SUBTRACTION
+        function executeTwosComplement(bin1, bin2, dec1, dec2) {
+            const onesComp = invertBits(bin2);
+            const twosCompObj = addBinaryStrings(onesComp, padBinary('1', state.bitLength));
+            const twosComp = twosCompObj.result;
+
+            const mainAdd = addBinaryStrings(bin1, twosComp);
+            let finalDec = dec1 - dec2;
+            let finalBin = '';
+            let steps = [];
+
+            steps.push(`<strong>Step 1:</strong> Find 1's complement of ${bin2} &rarr; <code class="text-purple-400">${onesComp}</code>`);
+            steps.push(`<strong>Step 2:</strong> Add 1 to get 2's complement &rarr; <code class="text-purple-300 font-bold">${twosComp}</code>`);
+            steps.push(`<strong>Step 3:</strong> Add 2's complement to first number (${bin1}) &rarr; Sum = <code class="text-blue-400">${mainAdd.result}</code>`);
+
+            if (mainAdd.carry === 1) {
+                finalBin = mainAdd.result;
+                steps.push(`<strong>Step 4:</strong> Carry Out = <strong>1</strong>. <span class="text-green-400 font-semibold">Discard Carry</span>. Result is Positive &rarr; <code class="text-green-400 font-bold">${finalBin}</code>`);
+            } else {
+                const resultTwosComp = addBinaryStrings(invertBits(mainAdd.result), padBinary('1', state.bitLength)).result;
+                finalBin = `-${resultTwosComp}`;
+                steps.push(`<strong>Step 4:</strong> Carry Out = <strong>0</strong>. Result is Negative. Take 2's complement of total sum to find magnitude &rarr; <code class="text-red-400 font-bold">-${resultTwosComp}</code>`);
+            }
+
+            renderVisualGrid({
+                carries: mainAdd.carries.slice(0, -1).join(''),
+                num1: bin1,
+                num2: twosComp,
+                operator: '+',
+                result: mainAdd.result,
+                finalCarry: mainAdd.carry
+            });
+
+            renderSteps(steps);
+            updateResultSummary(finalBin, finalDec, false);
+        }
+
+        // Render visual aligned binary rows
+        function renderVisualGrid(data) {
+            const container = document.getElementById('visual-alignment-container');
+            
+            let html = `<div class="font-mono tracking-widest text-right leading-relaxed">`;
+            
+            // Carry row
+            if (data.carries) {
+                html += `<div class="text-xs text-amber-400 font-bold h-5"><span class="mr-6">C:</span>${data.carries.padStart(state.bitLength, ' ')}</div>`;
+            }
+            
+            // Row A
+            html += `<div class="text-gray-200"><span class="mr-6 text-gray-500">A:</span>${data.num1}</div>`;
+            
+            // Row B
+            html += `<div class="text-gray-200 border-b-2 border-gray-600 pb-1"><span class="mr-2 text-blue-400 font-bold">${data.operator}</span><span class="mr-4 text-gray-500">B:</span>${data.num2}</div>`;
+            
+            // Result row
+            html += `<div class="pt-1 text-green-400 font-bold"><span class="mr-6 text-gray-500">=:</span>${data.result}</div>`;
+
+            if (data.finalCarry) {
+                html += `<div class="text-xs text-amber-400 mt-1 font-sans text-center">[ End Overflow Carry: ${data.finalCarry} ]</div>`;
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // Render bullet steps
+        function renderSteps(stepsArr) {
+            const container = document.getElementById('steps-container');
+            container.innerHTML = stepsArr.map((st, idx) => `
+                <div class="flex items-start space-x-3 p-3 bg-gray-900/60 rounded-xl border border-gray-700/50 text-xs text-gray-300">
+                    <span class="flex-shrink-0 w-5 h-5 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-full flex items-center justify-center font-bold text-xs">${idx + 1}</span>
+                    <div class="leading-relaxed">${st}</div>
+                </div>
+            `).join('');
+        }
+
+        // Update result summary box
+        function updateResultSummary(binStr, decVal, isOverflow) {
+            document.getElementById('res-binary').textContent = binStr;
+            document.getElementById('res-decimal').textContent = `(${decVal > 0 ? '+' : ''}${decVal} in decimal)`;
+
+            const badgeWrapper = document.getElementById('overflow-badge-wrapper');
+            if (isOverflow) {
+                badgeWrapper.innerHTML = `<span class="px-3 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold rounded-lg"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Bit Overflow Detected</span>`;
+            } else {
+                badgeWrapper.innerHTML = `<span class="px-3 py-1 bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-semibold rounded-lg"><i class="fa-solid fa-circle-check mr-1"></i> Exact Match</span>`;
+            }
+        }
+
+        // QUIZ MODULE GENERATOR & CHECKER
+        function generateQuestion() {
+            const topic = document.getElementById('quiz-topic').value;
+            const diff = document.getElementById('quiz-diff').value;
+
+            let bitLen = diff === 'easy' ? 4 : 8;
+            let maxVal = Math.pow(2, bitLen) - 1;
+
+            let n1 = Math.floor(Math.random() * (maxVal / 2)) + 2;
+            let n2 = Math.floor(Math.random() * (maxVal / 2)) + 1;
+
+            // Handle forced negative scenario for hard mode
+            if (diff === 'hard' && n1 > n2) {
+                let temp = n1;
+                n1 = n2;
+                n2 = temp;
+            }
+
+            let opTypes = ['add', 'sub-direct', 'sub-1comp', 'sub-2comp'];
+            let selectedOp = topic === 'all' ? opTypes[Math.floor(Math.random() * opTypes.length)] : topic;
+
+            let b1 = padBinary(n1.toString(2), bitLen);
+            let b2 = padBinary(n2.toString(2), bitLen);
+
+            let correctBin = '';
+            let explanation = [];
+
+            if (selectedOp === 'add') {
+                const res = addBinaryStrings(b1, b2);
+                correctBin = res.result;
+                explanation.push(`Standard Addition: ${b1} + ${b2} = ${correctBin}`);
+            } else if (selectedOp === 'sub-direct') {
+                if (n1 >= n2) {
+                    correctBin = padBinary((n1 - n2).toString(2), bitLen);
+                } else {
+                    correctBin = '-' + padBinary((n2 - n1).toString(2), bitLen);
+                }
+                explanation.push(`Direct Subtraction Result: ${correctBin}`);
+            } else if (selectedOp === 'sub-1comp') {
+                const inv = invertBits(b2);
+                const add1 = addBinaryStrings(b1, inv);
+                if (add1.carry === 1) {
+                    correctBin = addBinaryStrings(add1.result, padBinary('1', bitLen)).result;
+                    explanation.push(`1's complement of ${b2} = ${inv}`);
+                    explanation.push(`Add to ${b1} = ${add1.result} + Carry 1`);
+                    explanation.push(`Add end-around carry = ${correctBin}`);
+                } else {
+                    correctBin = '-' + invertBits(add1.result);
+                    explanation.push(`1's complement of ${b2} = ${inv}`);
+                    explanation.push(`Add to ${b1} = ${add1.result} (No Carry)`);
+                    explanation.push(`Take 1's complement & add negative sign = ${correctBin}`);
+                }
+            } else if (selectedOp === 'sub-2comp') {
+                const ones = invertBits(b2);
+                const twos = addBinaryStrings(ones, padBinary('1', bitLen)).result;
+                const add2 = addBinaryStrings(b1, twos);
+                if (add2.carry === 1) {
+                    correctBin = add2.result;
+                    explanation.push(`2's complement of ${b2} = ${twos}`);
+                    explanation.push(`Add to ${b1} = ${add2.result}`);
+                    explanation.push(`Discard carry bit. Final Answer: ${correctBin}`);
+                } else {
+                    const tw = addBinaryStrings(invertBits(add2.result), padBinary('1', bitLen)).result;
+                    correctBin = '-' + tw;
+                    explanation.push(`2's complement of ${b2} = ${twos}`);
+                    explanation.push(`Sum = ${add2.result} (No Carry)`);
+                    explanation.push(`Take 2's complement of result = -${tw}`);
+                }
+            }
+
+            state.currentQuizProblem = {
+                n1, n2, b1, b2, op: selectedOp, bitLen, correctBin, explanation
+            };
+
+            // Render to UI
+            const opSymbols = { 'add': '+', 'sub-direct': '-', 'sub-1comp': '-', 'sub-2comp': '-' };
+            document.getElementById('quiz-type-tag').textContent = selectedOp.toUpperCase().replace('-', ' ');
+            document.getElementById('quiz-bit-tag').textContent = `${bitLen}-bit representation`;
+            document.getElementById('quiz-problem-display').textContent = `${b1} ${opSymbols[selectedOp]} ${b2}`;
+            
+            const titles = {
+                'add': 'Add the two binary numbers.',
+                'sub-direct': 'Perform direct binary subtraction.',
+                'sub-1comp': 'Subtract using 1\'s Complement method.',
+                'sub-2comp': 'Subtract using 2\'s Complement method.'
+            };
+            document.getElementById('quiz-instruction').textContent = titles[selectedOp];
+            
+            document.getElementById('quiz-user-input').value = '';
+            document.getElementById('quiz-feedback').classList.add('hidden');
+            document.getElementById('quiz-solution-box').classList.add('hidden');
+        }
+
+        // Check Answer
+        function checkQuizAnswer() {
+            const userInput = document.getElementById('quiz-user-input').value.trim().replace(/\s+/g, '');
+            const prob = state.currentQuizProblem;
+            const feedback = document.getElementById('quiz-feedback');
+
+            if (!userInput) {
+                feedback.className = "mt-4 p-3 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-xl text-center text-xs font-semibold block";
+                feedback.textContent = "Please enter an answer before submitting.";
+                return;
+            }
+
+            if (userInput === prob.correctBin) {
+                state.quizScore += 10;
+                state.quizStreak += 1;
+                feedback.className = "mt-4 p-3 bg-green-500/10 border border-green-500/30 text-green-400 rounded-xl text-center text-xs font-semibold block";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i> Correct! Excellent job (+10 pts)`;
+            } else {
+                state.quizStreak = 0;
+                feedback.className = "mt-4 p-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl text-center text-xs font-semibold block";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark mr-2"></i> Incorrect. Expected: <code class="font-mono text-sm">${prob.correctBin}</code>`;
+            }
+
+            document.getElementById('quiz-score').textContent = state.quizScore;
+            document.getElementById('quiz-streak').textContent = `${state.quizStreak} 🔥`;
+        }
+
+        // Toggle Solution Box
+        function toggleQuizSolution() {
+            const solBox = document.getElementById('quiz-solution-box');
+            const stepsDiv = document.getElementById('quiz-solution-steps');
+            const prob = state.currentQuizProblem;
+
+            if (solBox.classList.contains('hidden')) {
+                stepsDiv.innerHTML = prob.explanation.map(e => `<p class="p-1.5 bg-gray-800 rounded border border-gray-700">&bull; ${e}</p>`).join('');
+                solBox.classList.remove('hidden');
+            } else {
+                solBox.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
